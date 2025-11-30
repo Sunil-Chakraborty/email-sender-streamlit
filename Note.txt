@@ -16,3 +16,8 @@ But if you want to keep it, no problem — it's harmless.
 You are seeing the “fetch first” error because your GitHub repo has commits that your local folder does not yet have.
 git pull --rebase origin main
 git push origin main
+
+If rebase fails
+git pull origin main
+git push origin main
+
