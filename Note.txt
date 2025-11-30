@@ -3,3 +3,16 @@ D:\email-sender-streamlit>venv\Scripts\activate
 
 git clone https://github.com/Sunil-Chakraborty/email-sender-streamlit.git
 
+
+
+git commit -m "Update email sender logic, settings, and notes"
+git push origin main
+
+
+del note.txt
+git restore --staged note.txt
+But if you want to keep it, no problem — it's harmless.
+
+You are seeing the “fetch first” error because your GitHub repo has commits that your local folder does not yet have.
+git pull --rebase origin main
+git push origin main
