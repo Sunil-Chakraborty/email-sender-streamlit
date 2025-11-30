@@ -1,24 +1,38 @@
-# email_service.py
+import os
 import smtplib
 from email.mime.text import MIMEText
-import settings
+from dotenv import load_dotenv
 
-def send_email(to, subject, message):
-    # 1. Create email object
-    msg = MIMEText(message)
-    msg['Subject'] = subject
-    msg['From'] = settings.DEFAULT_FROM_EMAIL
-    msg['To'] = to
+# Load .env variables
+load_dotenv()
 
-    # 2. Connect to Gmail server
-    server = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-    server.starttls()
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
-    # 3. LOGIN happens here
-    server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
 
-    # 4. Send email
-    server.send_message(msg)
+def send_gmail_message(to_email: str, subject: str, message: str) -> bool:
+    """
+    Sends email using Gmail SMTP and App Password.
+    Returns True on success, False on failure.
+    """
 
-    # 5. Close
-    server.quit()
+    try:
+        msg = MIMEText(message, "plain")
+        msg["Subject"] = subject
+        msg["From"] = DEFAULT_FROM_EMAIL
+        msg["To"] = to_email
+
+        # Gmail SMTP
+        with smtplib.SMTP(EMAIL_HOST, EMAIL_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+            server.send_message(msg)
+
+        return True
+
+    except Exception as e:
+        print(f"Email sending failed: {e}")
+        return False
