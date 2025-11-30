@@ -1,0 +1,2 @@
+cd email-sender-streamlit
+D:\email-sender-streamlit>venv\Scripts\activate
