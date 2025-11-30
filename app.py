@@ -11,10 +11,10 @@ st.set_page_config(
 )
 
 # --------------------------
-# UI Title
+# Page Title
 # --------------------------
 st.title("📧 Gmail SMTP Email Sender")
-st.write("Send email securely using Gmail App Password + Streamlit UI.")
+st.write("Send emails securely using your Gmail App Password.")
 
 st.markdown("---")
 
@@ -26,7 +26,7 @@ with st.form("email_form"):
         "Recipient Email",
         placeholder="example@domain.com"
     )
-    
+
     subject = st.text_input(
         "Subject",
         placeholder="Enter your subject..."
@@ -41,20 +41,19 @@ with st.form("email_form"):
     submitted = st.form_submit_button("📨 Send Email")
 
 # --------------------------
-# Form Submission Logic
+# Form Submission Handling
 # --------------------------
 if submitted:
     if not to_email or not subject or not message:
         st.error("❗ All fields are required.")
     else:
         try:
-            # call email service
-            result = send_gmail_message(to_email, subject, message)
+            email_sent = send_gmail_message(to_email, subject, message)
 
-            if result:
+            if email_sent:
                 st.success("✅ Email sent successfully!")
             else:
-                st.error("❗ Email failed to send. Check server logs.")
+                st.error("❗ Email failed to send. Check server logs or .env settings.")
 
         except Exception as e:
             st.error(f"❌ Error sending email: {e}")
