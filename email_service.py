@@ -16,7 +16,6 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 def send_gmail_message(to_email: str, subject: str, message: str) -> bool:
     """
     Sends email using Gmail SMTP and App Password.
-    Returns True on success, False on failure.
     """
 
     try:
@@ -25,7 +24,7 @@ def send_gmail_message(to_email: str, subject: str, message: str) -> bool:
         msg["From"] = DEFAULT_FROM_EMAIL
         msg["To"] = to_email
 
-        # Gmail SMTP
+        # SMTP Connection
         with smtplib.SMTP(EMAIL_HOST, EMAIL_PORT) as server:
             server.starttls()
             server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
