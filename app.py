@@ -1,27 +1,63 @@
 import streamlit as st
 from email_service import send_gmail_message
 
-st.set_page_config(page_title="Gmail API Email Sender", page_icon="📧", layout="centered")
+# --------------------------
+# Streamlit Page Settings
+# --------------------------
+st.set_page_config(
+    page_title="Gmail Email Sender",
+    page_icon="📧",
+    layout="centered"
+)
 
-st.title("📧 Send Email via Gmail API")
-st.write("Use this simple Streamlit interface to send email securely using the Gmail API.")
+# --------------------------
+# UI Title
+# --------------------------
+st.title("📧 Gmail SMTP Email Sender")
+st.write("Send email securely using Gmail App Password + Streamlit UI.")
 
+st.markdown("---")
+
+# --------------------------
+# Email Form
+# --------------------------
 with st.form("email_form"):
-    to_email = st.text_input("Recipient Email", placeholder="example@domain.com")
-    subject = st.text_input("Subject", placeholder="Enter your subject")
-    message = st.text_area("Message", height=200, placeholder="Type your message here...")
+    to_email = st.text_input(
+        "Recipient Email",
+        placeholder="example@domain.com"
+    )
+    
+    subject = st.text_input(
+        "Subject",
+        placeholder="Enter your subject..."
+    )
 
-    submitted = st.form_submit_button("Send Email")
+    message = st.text_area(
+        "Message",
+        height=200,
+        placeholder="Type your message here..."
+    )
 
+    submitted = st.form_submit_button("📨 Send Email")
+
+# --------------------------
+# Form Submission Logic
+# --------------------------
 if submitted:
     if not to_email or not subject or not message:
-        st.error("❗ All fields are required to send the email.")
+        st.error("❗ All fields are required.")
     else:
         try:
+            # call email service
             result = send_gmail_message(to_email, subject, message)
+
             if result:
                 st.success("✅ Email sent successfully!")
             else:
-                st.error("❗ Failed to send email. Check logs for details.")
+                st.error("❗ Email failed to send. Check server logs.")
+
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"❌ Error sending email: {e}")
+
+st.markdown("---")
+st.caption("Powered by Gmail SMTP + Streamlit © 2025")
