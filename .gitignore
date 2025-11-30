@@ -1,0 +1,33 @@
+# ------------------------------
+# Python
+# ------------------------------
+__pycache__/
+*.pyc
+
+# ------------------------------
+# Virtual environments
+# ------------------------------
+venv/
+env/
+.venv/
+.teacher_env/
+
+# ------------------------------
+# Streamlit / local cache
+# ------------------------------
+.streamlit/
+logs/
+
+# ------------------------------
+# Secrets & Sensitive Files
+# ------------------------------
+.env
+*.env
+client_secret.json
+credentials.json
+token.json
+
+# Prevent accidental uploads
+*_secret_*
+*api_key*
+*token*
