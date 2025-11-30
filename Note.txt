@@ -1,2 +1,5 @@
 cd email-sender-streamlit
 D:\email-sender-streamlit>venv\Scripts\activate
+
+git clone https://github.com/Sunil-Chakraborty/email-sender-streamlit.git
+
