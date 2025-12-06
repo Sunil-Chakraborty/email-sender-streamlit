@@ -5,10 +5,10 @@
 #venv\Scripts\activate
 #streamlit run app.py
 
-
 import streamlit as st
 from email_service import send_gmail_message
-
+import os
+import tempfile
 
 st.set_page_config(page_title="📧 Email Sender", layout="centered")
 
@@ -47,11 +47,11 @@ if submitted:
             saved_files = []
             if attachments:
                 for file in attachments:
-                    path = f"/tmp/{file.name}"
-                    with open(path, "wb") as f:
-                        f.write(file.read())
-                    saved_files.append(path)
-
+                    suffix = os.path.splitext(file.name)[1]
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                        tmp.write(file.read())
+                        saved_files.append(tmp.name)
+                        
             # Send email
             success = send_gmail_message(
                 to_list,
