@@ -6,12 +6,15 @@ from email.mime.base import MIMEBase
 from email import encoders
 from dotenv import load_dotenv
 
+# Load .env
 load_dotenv()
 
-EMAIL_HOST = os.getenv("SMTP_SERVER")
-EMAIL_PORT = int(os.getenv("SMTP_PORT", 587))
-EMAIL_HOST_USER = os.getenv("SMTP_EMAIL")
-EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")
+# Read variables from your existing .env file
+EMAIL_HOST = os.getenv("EMAIL_HOST")                 # smtp.gmail.com
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))       # 587
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")       # Gmail address
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # App password
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 
 
 def send_gmail_message(to_emails, cc_emails, bcc_emails, subject, body, attachments=None):
@@ -24,7 +27,7 @@ def send_gmail_message(to_emails, cc_emails, bcc_emails, subject, body, attachme
 
         msg.attach(MIMEText(body, "plain"))
 
-        # 🗂 Add attachments (if any)
+        # Attach files
         if attachments:
             for file_path in attachments:
                 try:
@@ -40,11 +43,24 @@ def send_gmail_message(to_emails, cc_emails, bcc_emails, subject, body, attachme
                 except Exception as e:
                     print("Attachment error:", e)
 
-        # Combine all recipients for sending
+        # Combine recipients
         all_recipients = list(set(to_emails + cc_emails + bcc_emails))
 
+        # Debug info
+        print("\n--- DEBUG INFO ---")
+        print("SMTP Server:", EMAIL_HOST)
+        print("SMTP Port:", EMAIL_PORT)
+        print("Login User:", EMAIL_HOST_USER)
+        print("To:", to_emails)
+        print("CC:", cc_emails)
+        print("BCC:", bcc_emails)
+        print("Total recipients:", all_recipients)
+        print("------------------\n")
+
+        # Connect SMTP
         with smtplib.SMTP(EMAIL_HOST, EMAIL_PORT) as server:
-            server.starttls()
+            if EMAIL_USE_TLS:
+                server.starttls()
             server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
             server.sendmail(EMAIL_HOST_USER, all_recipients, msg.as_string())
 
