@@ -9,11 +9,11 @@ from dotenv import load_dotenv
 # Load .env
 load_dotenv()
 
-# Read variables from your existing .env file
-EMAIL_HOST = os.getenv("EMAIL_HOST")                 # smtp.gmail.com
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))       # 587
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")       # Gmail address
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # App password
+# Use your existing .env variable names
+EMAIL_HOST = os.getenv("EMAIL_HOST")                     # smtp.gmail.com
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))           # 587
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")           # Gmail address
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")   # App password
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
 
 
@@ -27,23 +27,25 @@ def send_gmail_message(to_emails, cc_emails, bcc_emails, subject, body, attachme
 
         msg.attach(MIMEText(body, "plain"))
 
-        # Attach files
+        # attachments = [(temp_path, original_name), ...]
         if attachments:
-            for file_path in attachments:
+            for temp_path, original_name in attachments:
                 try:
                     part = MIMEBase("application", "octet-stream")
-                    with open(file_path, "rb") as f:
+                    with open(temp_path, "rb") as f:
                         part.set_payload(f.read())
                     encoders.encode_base64(part)
+
+                    # Force original filename
                     part.add_header(
                         "Content-Disposition",
-                        f"attachment; filename={os.path.basename(file_path)}"
+                        f'attachment; filename="{original_name}"'
                     )
                     msg.attach(part)
+
                 except Exception as e:
                     print("Attachment error:", e)
 
-        # Combine recipients
         all_recipients = list(set(to_emails + cc_emails + bcc_emails))
 
         # Debug info
@@ -57,7 +59,6 @@ def send_gmail_message(to_emails, cc_emails, bcc_emails, subject, body, attachme
         print("Total recipients:", all_recipients)
         print("------------------\n")
 
-        # Connect SMTP
         with smtplib.SMTP(EMAIL_HOST, EMAIL_PORT) as server:
             if EMAIL_USE_TLS:
                 server.starttls()
