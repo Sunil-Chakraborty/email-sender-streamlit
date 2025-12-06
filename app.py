@@ -6,9 +6,9 @@
 #streamlit run app.py
 
 import streamlit as st
-from email_service import send_gmail_message
 import os
 import tempfile
+from email_service import send_gmail_message
 
 st.set_page_config(page_title="📧 Email Sender", layout="centered")
 
@@ -31,7 +31,11 @@ with st.form("email_form"):
 def clean_email_list(email_str):
     if not email_str:
         return []
-    return [e.strip() for e in email_str.split(",") if e.strip()]
+    return [
+        e.strip()
+        for e in email_str.split(",")
+        if e.strip() and "@" in e and "." in e  # simple validation
+    ]
 
 
 if submitted:
@@ -43,15 +47,21 @@ if submitted:
             cc_list = clean_email_list(cc_email)
             bcc_list = clean_email_list(bcc_email)
 
-            # Save uploaded attachments temporarily
-            saved_files = []
+            # Save attachments to temp files
+            saved_files = []          # will store paths
+            saved_names = []          # will store original names
+
             if attachments:
                 for file in attachments:
                     suffix = os.path.splitext(file.name)[1]
                     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
                         tmp.write(file.read())
                         saved_files.append(tmp.name)
-                        
+                        saved_names.append(file.name)
+
+            # Bundle as pairs: (temp_path, original_name)
+            attachment_pairs = list(zip(saved_files, saved_names))
+
             # Send email
             success = send_gmail_message(
                 to_list,
@@ -59,13 +69,13 @@ if submitted:
                 bcc_list,
                 subject,
                 message,
-                attachments=saved_files
+                attachments=attachment_pairs
             )
 
             if success:
                 st.success("✅ Email sent successfully!")
             else:
-                st.error("❗ Email failed to send. Check .env settings or server logs.")
+                st.error("❗ Email failed to send. Check SMTP settings or logs.")
 
         except Exception as e:
             st.error(f"❌ Error sending email: {e}")
