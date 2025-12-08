@@ -13,8 +13,11 @@ git add .
 git commit -m "Updated 081225"
 git branch
 git push origin master
+<<<<<<< HEAD
 
 
 git pull origin master
 git push origin master
 
+=======
+>>>>>>> 8ad419be2079050ed65e0d5c810fbcde0959ea60
