@@ -7,3 +7,9 @@
 
 
 #venv\Scripts\activate
+
+git remote add origin https://github.com/Sunil-Chakraborty/email-sender-streamlit.git
+git add .
+git commit -m "Updated 081225"
+git branch
+git push origin master
