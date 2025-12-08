@@ -1,0 +1,9 @@
+
+#in PS
+#.\venv\Scripts\activate
+#CMD
+#venv\Scripts\activate
+#streamlit run app.py
+
+
+#venv\Scripts\activate
