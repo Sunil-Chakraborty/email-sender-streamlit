@@ -21,3 +21,24 @@ git push origin master
 
 =======
 >>>>>>> 8ad419be2079050ed65e0d5c810fbcde0959ea60
+
+# How to convert .xlsx to .csv file 
+echo "go to env and do installation"
+pip install csvkit
+echo "run the following command after installation"
+in2csv messy_data.xlsx --sheet "Sheet1" > messy.csv
+
+# First, check the names of the sheets in the XLSX file:
+in2csv -n your_excel_file.xlsx
+echo "This will output a list of sheet names, such as:"
+Sheet1
+Data-Q3
+Summary Report
+
+in2csv your_excel_file.xlsx --write-sheets - --use-sheet-names
+
+in poweshell prompt : 
+foreach ($sheet in (in2csv -n student_nirf.xlsx)) {
+    in2csv student_nirf.xlsx --sheet $sheet > "csv_files\$sheet.csv"
+}
+
